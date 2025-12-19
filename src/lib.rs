@@ -1,10 +1,11 @@
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use std::{
     fs::{self, File},
     io::Write,
+    path::Path,
 };
-pub fn read(path: &str) -> Result<Option<String>> {
-    if fs::exists(path)? {
+pub fn read(path: impl AsRef<Path>) -> Result<Option<String>> {
+    if fs::exists(&path)? {
         let file_contents = fs::read_to_string(path)?;
         if file_contents.is_empty() {
             Ok(None)
@@ -16,7 +17,7 @@ pub fn read(path: &str) -> Result<Option<String>> {
     }
 }
 
-pub fn append(path: &str, text: String) -> Result<()> {
+pub fn append(path: impl AsRef<Path>, text: String) -> Result<()> {
     let mut logbook = File::options().create(true).append(true).open(path)?;
     writeln!(logbook, "{}", text)?;
     Ok(())
@@ -25,6 +26,7 @@ pub fn append(path: &str, text: String) -> Result<()> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use tempfile::tempdir;
     mod read {
         use super::*;
         #[test]
@@ -48,8 +50,8 @@ mod test {
         use super::*;
         #[test]
         fn creates_file_if_necessary() {
-            let path = "tests/data/newlog.txt";
-            assert!(!fs::exists(path).unwrap(), "Path must not already exist");
+            let dir = tempdir().unwrap();
+            let path = dir.path().join("newlog.txt");
 
             let mut test_text = "hello logbook".to_string();
             append(&path, test_text.clone()).unwrap();
@@ -60,8 +62,6 @@ mod test {
                 file_text, test_text,
                 "Text must match input text, plus a newline"
             );
-            //cleanup
-            fs::remove_file(path).unwrap();
         }
     }
 }
