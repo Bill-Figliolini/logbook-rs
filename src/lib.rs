@@ -63,5 +63,23 @@ mod test {
                 "Text must match input text, plus a newline"
             );
         }
+        #[test]
+        fn appends_to_file() {
+            let dir = tempdir().unwrap();
+            let path = dir.path().join("newlog.txt");
+
+            let mut test_text = "hello logbook".to_string();
+            append(&path, test_text.clone()).unwrap();
+            append(&path, test_text.clone()).unwrap();
+
+            let file_text = fs::read_to_string(path).unwrap();
+            test_text.push('\n');
+            test_text = test_text.repeat(2);
+
+            assert_eq!(
+                file_text, test_text,
+                "Text must match input text, plus a newline"
+            );
+        }
     }
 }
