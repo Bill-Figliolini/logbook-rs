@@ -6,6 +6,10 @@ use std::{
     io::Write,
     path::Path,
 };
+// Reads the contents of the file at path.
+//
+// #Errors:
+// returns any error from ['exists'](fs::exists), ['read_to_string'](fs::read_to_string)
 pub fn read(path: impl AsRef<Path>) -> Result<Option<String>> {
     if fs::exists(&path)? {
         let file_contents = fs::read_to_string(path)?;
@@ -18,7 +22,10 @@ pub fn read(path: impl AsRef<Path>) -> Result<Option<String>> {
         Ok(None)
     }
 }
-
+// Appends the text to the file at path, creating if necessary
+//
+// #Errors:
+// returns any error from ['open'](fs::OpenOptions::open), or ['writeln!']
 pub fn append(path: impl AsRef<Path>, text: String) -> Result<()> {
     let mut logbook = File::options().create(true).append(true).open(path)?;
     writeln!(logbook, "{}", text)?;
