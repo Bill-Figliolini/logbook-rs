@@ -1,15 +1,18 @@
-use anyhow::{Result, bail};
-
-use std::{fs::File, io::Write};
+use anyhow::Result;
 
 fn main() -> Result<()> {
     let args: Vec<_> = std::env::args().skip(1).collect();
 
-    if args.is_empty() {
-        bail!("Usage: logbook <Message>")
-    }
     let path = "logbook.txt";
-    let mut logbook = File::options().create(true).append(true).open(path)?;
-    writeln!(logbook, "{}", args.join(" "))?;
+    if args.is_empty() {
+        let contents = logbook_rs::read(path)?;
+        match contents {
+            Some(contents) => print!("{}", contents),
+            None => println!("Empty Logbook"),
+        }
+    } else {
+        let text = args.join(" ");
+        logbook_rs::append(path, text)?;
+    }
     Ok(())
 }
