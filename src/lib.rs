@@ -1,3 +1,5 @@
+//! Records observations in a logbookfile, or lists previous observations
+
 use anyhow::Result;
 use std::{
     fs::{self, File},
