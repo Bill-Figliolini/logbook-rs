@@ -8,6 +8,8 @@ use std::{
 };
 // Reads the contents of the file at path.
 //
+// Returns ['None'] if the file is empty or does not exist.
+//
 // #Errors:
 // returns any error from ['exists'](fs::exists), ['read_to_string'](fs::read_to_string)
 pub fn read(path: impl AsRef<Path>) -> Result<Option<String>> {
@@ -31,7 +33,6 @@ pub fn append(path: impl AsRef<Path>, text: String) -> Result<()> {
     writeln!(logbook, "{}", text)?;
     Ok(())
 }
-
 #[cfg(test)]
 mod test {
     use super::*;

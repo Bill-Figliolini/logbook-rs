@@ -2,6 +2,12 @@
 name = "logbook-rs"
 version = "0.1.0"
 edition = "2024"
+license = "MIT OR Apache-2.0"
+description = """
+Record observations
+"""
+keywords = ["cli", "utilities", "text"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 anyhow = "1.0.100"
